@@ -15,13 +15,13 @@ export default function InvoiceDialog({ open, setOpen, data }: InvoiceDialogProp
           <DialogTitle>Thông tin hóa đơn</DialogTitle>
         </DialogHeader>
         <div>
-          {/* <div>{data?.id}</div>
+          <div>{data?.id}</div>
           <div>{data?.month}</div>
           <div>{data?.room}</div>
           <div>{data?.status}</div>
           <div>{data?.tenant}</div>
           <div>{data?.total}</div>
-           */}
+          
            <ProfileForm/>
         </div>
 
