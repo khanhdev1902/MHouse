@@ -39,10 +39,7 @@ export function CalendarInput() {
   const [value, setValue] = React.useState(formatDate(date))
 
   return (
-    <div className="flex flex-col gap-3">
-      {/* <Label htmlFor="date" className="px-1">
-        Subscription Date
-      </Label> */}
+    <div className="flex flex-col gap-3 ">
       <div className="relative flex gap-2">
         <Input
           id="date"

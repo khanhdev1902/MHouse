@@ -3,6 +3,24 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@layer utilities {
+  .text-primary {
+    @apply bg-gradient-to-br from-[#193cb8] to-[#00b09b] bg-clip-text text-transparent;
+  }
+  .bg-primary {
+    @apply bg-gradient-to-br from-[#193cb8] to-[#00b09b];
+  }
+  .bg-primary-hover:hover {
+    @apply bg-gradient-to-br from-[#193cb8]/50 to-[#00b09b]/50;
+  }
+}
+
+@theme {
+  --color-bg-main: #f5f6fa;
+  --color-main: #193cb8;
+  --color-textmain: #434343;
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -137,6 +155,24 @@
   }
 }
 
-@theme {
-  /* --color-main: #f5f6f7; */
+/*--------- custom-scrollbar ---------------------------------*/
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to top right, #193cb8, #00b09b);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to top left, #06b5d4c3, #8a5cf6d6);
+}
+
+/* -------------------------------------------------------------- */
