@@ -12,7 +12,6 @@ import {
   Legend,
 } from 'recharts'
 
-// --- Mock data ---
 const revenueData = [
   { date: '01/12', revenue: 1200000 },
   { date: '02/12', revenue: 1500000 },
@@ -33,7 +32,6 @@ const COLORS = ['#00b09b', '#193cb8', '#fc4a1a'] // xanh, xanh dương, đỏ
 export default function DashboardCharts() {
   return (
     <div className='w-full flex flex-row gap-5 mt-5'>
-      {/* Area Chart */}
       <div className='flex-2 h-72 p-4 shadow-sm  rounded-lg'>
         <h3 className=' font-bold mb-5'>Doanh thu theo ngày</h3>
         <ResponsiveContainer width='100%' height='90%'>
@@ -53,7 +51,6 @@ export default function DashboardCharts() {
         </ResponsiveContainer>
       </div>
 
-      {/* Donut Chart */}
       <div className='flex-1 h-72 p-5 shadow-sm rounded-lg'>
         <h3 className='font-bold'>Tỷ lệ phòng</h3>
         <ResponsiveContainer width='100%' height='95%'>
@@ -73,7 +70,7 @@ export default function DashboardCharts() {
                 <Cell key={index} fill={COLORS[index % COLORS.length]} />
               ))}
             </Pie>
-            <Legend verticalAlign='bottom' height={20}/>
+            <Legend verticalAlign='bottom' height={20} />
           </PieChart>
         </ResponsiveContainer>
       </div>
