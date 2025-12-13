@@ -66,7 +66,7 @@ export default function DashboardCharts() {
               paddingAngle={5}
               label
             >
-              {roomData.map((entry, index) => (
+              {roomData.map((_, index) => (
                 <Cell key={index} fill={COLORS[index % COLORS.length]} />
               ))}
             </Pie>
