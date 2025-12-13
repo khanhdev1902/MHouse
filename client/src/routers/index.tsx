@@ -20,7 +20,7 @@ export default function AppRouter() {
           <Route path="/service" element={<Service />} />
           <Route path="/room" element={<Room />} />
           <Route path="/invoice" element={<Invoice />} />
-          <Route path="/group-chat" element={<GroupChat />} />
+          <Route path="/groupchat" element={<GroupChat />} />
           <Route path="/contract" element={<Contract />} />
           <Route path="/user" element={<User />} />
         </Route>

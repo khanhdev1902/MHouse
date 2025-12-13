@@ -4,6 +4,7 @@ import InvoiceTable from './components/InvoiceTable'
 import { type Invoice } from '@/types/Invoice'
 import { useInvoiceFilter } from '@/hooks/useInvoice'
 import InvoiceFilterBar from './components/InvoiceFilterBar'
+import Container from '@/components/Container'
 
 const InvoiceCards = [
   {
@@ -35,7 +36,7 @@ const InvoiceCards = [
 export default function Invoice() {
   const { filter, updateFilter, filtered } = useInvoiceFilter(invoices)
   return (
-    <div className='w-full h-full p-5 flex flex-col gap-5'>
+    <Container className='flex flex-col gap-5'>
       <div className='flex flex-row justify-between items-center gap-3'>
         {InvoiceCards.map((item, key) => (
           <InvoiceCard key={key} title={item.title} value={item.value} />
@@ -44,6 +45,6 @@ export default function Invoice() {
 
       <InvoiceFilterBar filter={filter} updateFilter={updateFilter} />
       <InvoiceTable INVOICE_DATA={filtered} />
-    </div>
+    </Container>
   )
 }

@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Bell, Newspaper } from 'lucide-react'
-import { CalendarInput } from '../CaledarInput'
 import { cn } from '@/lib/utils'
+import { CalendarInput } from '@/components/CaledarInput'
 export default function Header({ className }: { className?: string }) {
   return (
     <header className={cn('flex flex-row justify-between items-center px-10 py-4 shadow-sm', className)}>

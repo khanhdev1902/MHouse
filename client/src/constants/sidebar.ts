@@ -13,7 +13,7 @@ export const sidebarItems = [
     title: "Doanh thu",
   },
   {
-    path: "group-chat",
+    path: "groupchat",
     title: "Group chat",
   },
   {
