@@ -2,7 +2,7 @@ import { Button } from "../ui/button";
 
 interface SearchInputProps {
   placeholder?: string;
-  search: string;
+  search?: string;
   setSearch: React.Dispatch<React.SetStateAction<string>>;
 }
 
