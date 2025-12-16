@@ -1,39 +1,38 @@
-
 export const sidebarItems = [
   {
-    path: "",
-    title: "Trang chủ",
+    path: '',
+    title: 'Trang chủ',
   },
   {
-    path: "statistic",
-    title: "Thống kê",
+    path: 'statistic',
+    title: 'Thống kê',
   },
   {
-    path: "revenue",
-    title: "Doanh thu",
+    path: 'invoice',
+    title: 'Hóa đơn',
   },
   {
-    path: "groupchat",
-    title: "Group chat",
+    path: 'groupchat',
+    title: 'Group chat',
   },
   {
-    path: "room",
-    title: "Phòng",
+    path: 'room',
+    title: 'Phòng',
   },
   {
-    path: "service",
-    title: "Dịch vụ",
+    path: 'service',
+    title: 'Dịch vụ',
   },
   {
-    path: "invoice",
-    title: "Hóa đơn",
+    path: 'contract',
+    title: 'Hợp đồng',
   },
   {
-    path: "contract",
-    title: "Hợp đồng",
+    path: 'user',
+    title: 'Người dùng',
   },
   {
-    path: "user",
-    title: "Người dùng",
+    path: 'revenue',
+    title: 'Doanh thu',
   },
-];
+]

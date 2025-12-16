@@ -16,7 +16,7 @@ export default function InvoiceFilterBar({
   filter: InvoiceFilter
   updateFilter: (key: keyof InvoiceFilter, value: string | number) => void
 }) {
-  const [active, setActive] = useState('')
+  const [active, setActive] = useState('all')
   return (
     <div className='flex flex-col gap-y-12 pt-14'>
       <div className='flex flex-row justify-between items-center'>

@@ -5,7 +5,7 @@ import Statistic from "@/pages/Statistic";
 import Service from "@/pages/Service";
 import Room from "@/pages/Room";
 import GroupChat from "@/pages/GroupChat";
-import Contract from "@/pages/Contract";
+import Contract from "@/pages/Contract/Contract";
 import User from "@/pages/User";
 import Invoice from "@/pages/Invoice";
 import Revenue from "@/pages/Revenue";
