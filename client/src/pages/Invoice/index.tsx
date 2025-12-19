@@ -5,42 +5,21 @@ import { type Invoice } from '@/types/Invoice'
 import { useInvoiceFilter } from '@/hooks/useInvoice'
 import InvoiceFilterBar from './components/InvoiceFilterBar'
 import Container from '@/components/Container'
-
-const InvoiceCards = [
-  {
-    title: 'Hóa đơn tháng này',
-    value: 20,
-  },
-  {
-    title: 'Đã thanh toán',
-    value: 12,
-  },
-  {
-    title: 'Chưa thanh toán',
-    value: 8,
-  },
-  {
-    title: 'Quá hạn',
-    value: 0,
-  },
-  {
-    title: 'Tổng doanh thu tháng',
-    value: 19000000,
-  },
-  {
-    title: 'Tổng nợ chưa thu',
-    value: 19000000,
-  },
-]
+import { CheckCircle, Clock, DollarSign, FileText } from 'lucide-react'
 
 export default function Invoice() {
   const { filter, updateFilter, filtered } = useInvoiceFilter(invoices)
   return (
     <Container className='flex flex-col gap-5'>
-      <div className='flex flex-row justify-between items-center gap-3'>
-        {InvoiceCards.map((item, key) => (
-          <InvoiceCard key={key} title={item.title} value={item.value} />
-        ))}
+      <div className='grid grid-cols-4 gap-6'>
+        <InvoiceCard
+          title='Tổng doanh thu'
+          value={12500000}
+          icon={<DollarSign className='h-5 w-5' />}
+        />
+        <InvoiceCard title='Hóa đơn tháng này' value={42} icon={<FileText className='h-5 w-5' />} />
+        <InvoiceCard title='Chưa thanh toán' value={6} icon={<Clock className='h-5 w-5' />} />
+        <InvoiceCard title='Đã hoàn tất' value={36} icon={<CheckCircle className='h-5 w-5' />} />
       </div>
 
       <InvoiceFilterBar filter={filter} updateFilter={updateFilter} />

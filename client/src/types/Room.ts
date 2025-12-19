@@ -39,7 +39,7 @@ export interface Room {
   floor: number
   price: number
   status: "available" | "occupied" | "maintenance"
-  category: "standard" | "vip"
+  category: string
   note?: string
   createdAt: string
   updatedAt: string

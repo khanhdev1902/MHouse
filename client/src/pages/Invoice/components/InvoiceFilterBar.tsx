@@ -1,91 +1,86 @@
 import { Button } from '@/components/ui/button'
 import type { InvoiceFilter } from '@/hooks/useInvoice'
-import { useState } from 'react'
+import { Search } from 'lucide-react'
 
-const StatusInvoices = [
+const STATUS_INVOICES = [
   { key: 'all', title: 'Tất cả' },
   { key: 'unpaid', title: 'Chưa thanh toán' },
   { key: 'paid', title: 'Đã thanh toán' },
   { key: 'late', title: 'Quá hạn' },
-]
+] as const
 
-export default function InvoiceFilterBar({
-  filter,
-  updateFilter,
-}: {
+type Props = {
   filter: InvoiceFilter
   updateFilter: (key: keyof InvoiceFilter, value: string | number) => void
-}) {
-  const [active, setActive] = useState('all')
+}
+
+export default function InvoiceFilterBar({ filter, updateFilter }: Props) {
   return (
-    <div className='flex flex-col gap-y-12 pt-14'>
-      <div className='flex flex-row justify-between items-center'>
-        <div className='border rounded-4xl px-3 py-2 shadow-sm'>
+    <div className='flex flex-col gap-8 pt-10'>
+      {/* ===== TOP BAR ===== */}
+      <div className='flex items-center justify-between gap-6'>
+        {/* Search */}
+        <div className='flex items-center gap-3 border rounded-2xl px-4 py-2 shadow-sm w-[480px]'>
+          <Search size={18} className='text-muted-foreground' />
           <input
             type='text'
             value={filter.search}
             onChange={(e) => updateFilter('search', e.target.value)}
             placeholder='Mã hóa đơn, tên khách, số phòng...'
-            className=' min-w-96 outline-none px-3'
+            className='flex-1 outline-none bg-transparent text-sm'
           />
-          <Button
-            variant={'outline'}
-            className=' border rounded-3xl px-5 py-3 shadow-sm cursor-pointer 
-              hover:scale-105 active:scale-95 duration-300'
-          >
+          <Button size='sm' className='rounded-xl'>
             Tìm kiếm
           </Button>
         </div>
-        <div className='flex flex-row gap-3'>
-          <Button
-            variant={'outline'}
-            className=' rounded-xl px-5 py-5 cursor-pointer hover:scale-105 active:scale-95 duration-300 '
-          >
-            Tạo hóa đơn mới
+
+        {/* Actions */}
+        <div className='flex items-center gap-3'>
+          <Button variant='outline' className='rounded-xl'>
+            + Tạo hóa đơn
           </Button>
-          <Button
-            variant={'outline'}
-            className=' rounded-xl px-5 py-5 cursor-pointer hover:scale-105 active:scale-95 duration-300 '
-          >
+          <Button variant='outline' className='rounded-xl'>
             Xuất Excel / PDF
           </Button>
-          <Button
-            variant={'outline'}
-            className=' rounded-xl px-5 py-5 cursor-pointer hover:scale-105 active:scale-95 duration-300 '
-          >
-            Gửi nhắc nhở hàng loạt
+          <Button variant='outline' className='rounded-xl'>
+            Gửi nhắc nhở
           </Button>
         </div>
       </div>
-      <div className='flex flex-row justify-between items-center'>
-        <div className='flex flex-row gap-2 items-center'>
-          <div className=' text-lg font-semibold'> Trạng thái:</div>
-          <div className='flex flex-row border rounded-xl'>
-            {StatusInvoices.map((item, key) => (
-              <div
-                onClick={() => {
-                  updateFilter('status', item.key)
-                  setActive(item.key)
-                }}
-                key={key}
-                className={`px-5 py-0.5 rounded-full cursor-pointer duration-300 font-bold ${
-                  active === item.key && 'bg-primary text-white'
-                }`}
+
+      {/* ===== FILTER BAR ===== */}
+      <div className='flex items-center justify-between'>
+        {/* Status */}
+        <div className='flex items-center gap-4'>
+          <span className='font-semibold text-base'>Trạng thái:</span>
+          <div className='flex items-center gap-1 border rounded-full p-1 bg-muted/40'>
+            {STATUS_INVOICES.map((item) => (
+              <button
+                key={item.key}
+                onClick={() => updateFilter('status', item.key)}
+                className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all
+                  ${
+                    filter.status === item.key
+                      ? 'bg-primary text-white shadow'
+                      : 'text-muted-foreground hover:bg-muted'
+                  }
+                `}
               >
                 {item.title}
-              </div>
+              </button>
             ))}
           </div>
         </div>
 
-        <div className='flex flex-row gap-5 items-center'>
-          <div className='flex flex-row gap-3'>
-            <span className='font-semibold text-lg'>Phòng:</span>
+        {/* Other filters */}
+        <div className='flex items-center gap-6'>
+          {/* Room */}
+          <div className='flex items-center gap-2'>
+            <span className='font-semibold'>Phòng:</span>
             <select
-              id='room'
               value={filter.room}
               onChange={(e) => updateFilter('room', e.target.value)}
-              className='border-none outline-none px-1 py-0.5'
+              className='rounded-lg border px-2 py-1 text-sm outline-none'
             >
               <option value='all'>Tất cả</option>
               <option value='A101'>A101</option>
@@ -95,38 +90,43 @@ export default function InvoiceFilterBar({
               <option value='A105'>A105</option>
             </select>
           </div>
-          <div className='flex flex-row gap-3 items-center'>
-            <div className=' text-lg font-semibold'>Thời gian:</div>
-            <div className='flex flex-row gap-2'>
-              <span>Tháng</span>
+
+          {/* Time */}
+          <div className='flex items-center gap-4'>
+            <span className='font-semibold'>Thời gian:</span>
+
+            <div className='flex items-center gap-2'>
+              <span className='text-sm'>Tháng</span>
               <select
-                id='month'
                 value={filter.month}
                 onChange={(e) => updateFilter('month', e.target.value)}
-                className='border-none outline-none px-1 py-0.5'
+                className='rounded-lg border px-2 py-1 text-sm outline-none'
               >
                 <option value='all'>Tất cả</option>
-                <option value='01'>01</option>
-                <option value='02'>02</option>
-                <option value='03'>03</option>
-                <option value='04'>04</option>
-                <option value='05'>05</option>
+                {Array.from({ length: 12 }, (_, i) => {
+                  const m = String(i + 1).padStart(2, '0')
+                  return (
+                    <option key={m} value={m}>
+                      {m}
+                    </option>
+                  )
+                })}
               </select>
             </div>
-            <div className='flex flex-row gap-2'>
-              <span>Năm</span>
+
+            <div className='flex items-center gap-2'>
+              <span className='text-sm'>Năm</span>
               <select
-                id='year'
                 value={filter.year}
                 onChange={(e) => updateFilter('year', e.target.value)}
-                className='border-none outline-none px-1 py-0.5'
+                className='rounded-lg border px-2 py-1 text-sm outline-none'
               >
                 <option value='all'>Tất cả</option>
-                <option value='2025'>2025</option>
-                <option value='2026'>2026</option>
-                <option value='2027'>2027</option>
-                <option value='2028'>2028</option>
-                <option value='2029'>2029</option>
+                {[2025, 2026, 2027, 2028, 2029].map((y) => (
+                  <option key={y} value={y}>
+                    {y}
+                  </option>
+                ))}
               </select>
             </div>
           </div>

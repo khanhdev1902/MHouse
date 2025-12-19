@@ -1,7 +1,9 @@
 export type Service = {
-  name: string
-  price: number
-  unit: string
-  quantity: number
-  total: number
+  serviceId?: number
+  name?: string
+  price?: number
+  unit?: string
+  quantity?: number
+  romId?:number
+  note?:string
 }

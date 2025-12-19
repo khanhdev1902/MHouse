@@ -1,11 +1,12 @@
 import Container from '@/components/Container'
-import RoomDialog from './components/RoomDialog'
 import SearchInput from '@/components/Input/SearchInput'
 import RoomCard from './components/RoomCard'
 import { useRoom } from '@/hooks/useRoom'
 import { type Room } from '@/types/Room'
 import clsx from 'clsx'
 import { useEffect, useState } from 'react'
+import RoomFormDialog from './components/RoomDialog'
+
 const statusList = [
   { key: '', label: 'Tất cả' },
   { key: 'available', label: 'Đang trống' },
@@ -14,58 +15,88 @@ const statusList = [
 ]
 
 export default function Room() {
-  const { rooms, loading, createRoom, updateRoom, error } = useRoom()
-  const [lstRoom, setLstRoom] = useState<Room[]>(rooms)
-  const [status, setStatus] = useState<string>('Tất cả')
+  const { rooms, loading, createRoom, updateRoom, deleteRoom, error } = useRoom()
+  const [lstRoom, setLstRoom] = useState<Room[]>([])
+  const [status, setStatus] = useState<string>('')
   const [search, setSearch] = useState('')
 
   useEffect(() => {
-    const handleChangeData = () => {
-      console.log(status)
-      const lst = rooms
-        .filter((r) => (status && status !== 'Tất cả' ? status === r.status : true))
-        .filter((r) =>
-          search ? r.roomCode.toLowerCase().includes(search.toLowerCase().trim()) : true
-        )
-      setLstRoom(lst)
-    }
-    handleChangeData()
+    const lst = rooms
+      .filter((r) => (status ? r.status === status : true))
+      .filter((r) =>
+        search ? r.roomCode.toLowerCase().includes(search.toLowerCase().trim()) : true
+      )
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setLstRoom(lst)
   }, [status, search, rooms])
-  if (loading) return <div>Loading...</div>
-  // if (!loading) setLstRoom(rooms)
-  console.log(rooms)
-  if (error) return <div className='text-red-500'>{error}</div>
+
+  if (loading)
+    return <div className='flex justify-center py-20 text-muted-foreground'>Loading...</div>
+
+  if (error) return <div className='text-red-500 text-center py-10'>{error}</div>
+
   return (
-    <Container className='flex flex-col gap-5'>
-      <div className=' flex flex-row justify-between items-center'>
-        <SearchInput placeholder='Số phòng...' search={search} setSearch={setSearch} />
-        <RoomDialog
-          label='Thêm Phòng mới:'
-          buttonName='Thêm phòng'
-          onSubmit={(data) => createRoom(data)}
+    <Container className='space-y-6'>
+      {/* ===== Header ===== */}
+      <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
+
+        <SearchInput
+          placeholder='Tìm theo số phòng...'
+          search={search}
+          setSearch={setSearch}
         />
+
+        <RoomFormDialog mode='create' onCreate={createRoom} />
       </div>
-      <div className=' flex flex-row items-center rounded-3xl w-fit shadow-sm gap-1.5'>
-        <span className='px-5 py-3'>Trạng thái:</span>
-        {statusList.map((item, key) => (
-          <span
-            key={key}
-            onClick={() => setStatus(item.label)}
-            className={clsx(
-              'font-semibold px-5 py-3 rounded-3xl select-none cursor-pointer ',
-              status === item.label ? 'bg-primary text-white' : 'bg-primary-hover hover:text-white'
-            )}
-          >
-            {item.label}
-          </span>
+
+      {/* ===== Status Filter ===== */}
+      <div
+        className='
+          flex w-fit items-center gap-1 rounded-full
+          border bg-white p-1 shadow-sm
+        '
+      >
+        {statusList.map((item) => {
+          const active = status === item.key
+
+          return (
+            <button
+              key={item.key}
+              onClick={() => setStatus(item.key)}
+              className={clsx(
+                'px-4 py-2 text-sm font-medium rounded-full transition-all',
+                active
+                  ? 'bg-primary text-white shadow'
+                  : 'text-muted-foreground hover:bg-muted'
+              )}
+            >
+              {item.label}
+            </button>
+          )
+        })}
+      </div>
+
+      {/* ===== Room Grid ===== */}
+      <div
+        className='
+          grid gap-5
+          grid-cols-1
+          sm:grid-cols-2
+          lg:grid-cols-3
+          xl:grid-cols-4
+        '
+      >
+        {lstRoom.map((item) => (
+          <RoomCard key={item.roomId} room={item} onUpdate={updateRoom} onDelete={deleteRoom}/>
         ))}
       </div>
-      <div className=' grid grid-cols-4 gap-5'>
-        {lstRoom.map((item, key) => (
-          <RoomCard key={key} room={item} onUpdate={updateRoom} />
-        ))}
-      </div>
-      {lstRoom.length === 0 && <div className='text-center pt-5'>Không tìm thấy phòng</div>}
+
+      {/* ===== Empty ===== */}
+      {lstRoom.length === 0 && (
+        <div className='text-center py-10 text-muted-foreground'>
+          Không tìm thấy phòng phù hợp
+        </div>
+      )}
     </Container>
   )
 }
