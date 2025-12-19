@@ -2,10 +2,10 @@ const { Amenity, Room } = require('../models')
 
 const createAmenity = async (data) => {
   // validate room tồn tại
-  if (data.roomId) {
-    const room = await Room.findByPk(data.roomId)
-    if (!room) throw new Error('Room not found')
-  }
+  // if (data.roomId) {
+  //   const room = await Room.findByPk(data.roomId)
+  //   if (!room) throw new Error('Room not found')
+  // }
 
   return await Amenity.create(data)
 }
@@ -26,10 +26,10 @@ const updateAmenity = async (id, data) => {
   const amenity = await Amenity.findByPk(id)
   if (!amenity) return null
 
-  if (data.roomId) {
-    const room = await Room.findByPk(data.roomId)
-    if (!room) throw new Error('Room not found')
-  }
+  // if (data.roomId) {
+  //   const room = await Room.findByPk(data.roomId)
+  //   if (!room) throw new Error('Room not found')
+  // }
 
   await amenity.update(data)
   return amenity

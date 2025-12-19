@@ -1,9 +1,9 @@
 import RevenueAreaChart from "@/components/AreaChart";
 import { Chart } from "@/components/Chart";
 import Container from "@/components/Container";
-import RevenueDoughnutChart from "@/components/RevenueDoughnutChart";
-import RevenueMultiLineChart from "@/components/RevenueMultiLineChart";
-import RevenueProfitComboChart from "@/components/RevenueProfitComboChart";
+import RevenueDoughnutChart from "@/components/Table/RevenueDoughnutChart";
+import RevenueMultiLineChart from "@/components/Table/RevenueMultiLineChart";
+import RevenueProfitComboChart from "@/components/Table/RevenueProfitComboChart";
 import Sparkline from "@/components/Chart/Sparkline";
 import StackedBarChart from "@/components/Chart/StackedBarChart";
 import { piechartData, stackedbarchartData } from "@/constants/chart";

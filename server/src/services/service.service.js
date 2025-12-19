@@ -1,12 +1,6 @@
 const { Service, Room } = require('../models')
 
 const createService = async (data) => {
-  // Optional: check room tồn tại
-  if (data.roomId) {
-    const room = await Room.findByPk(data.roomId)
-    if (!room) throw new Error('Room not found')
-  }
-
   return await Service.create(data)
 }
 
@@ -27,10 +21,10 @@ const updateService = async (id, data) => {
   if (!service) return null
 
   // Optional: validate roomId khi update
-  if (data.roomId) {
-    const room = await Room.findByPk(data.roomId)
-    if (!room) throw new Error('Room not found')
-  }
+  // if (data.roomId) {
+  //   const room = await Room.findByPk(data.roomId)
+  //   if (!room) throw new Error('Room not found')
+  // }
 
   await service.update(data)
   return service

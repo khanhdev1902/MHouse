@@ -1,4 +1,5 @@
 const express = require('express')
+const cors = require('cors')
 const { connectDB } = require('./config/database')
 const userRoutes = require('./routes/user.route')
 const roomRoutes = require('./routes/room.route')
@@ -12,6 +13,7 @@ const invoiceDetailRoute = require('./routes/invoiceDetail.route')
 
 const app = express()
 app.use(express.json())
+app.use(cors())
 
 app.use('/api/users', userRoutes)
 app.use('/api/rooms', roomRoutes)
