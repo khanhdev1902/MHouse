@@ -67,7 +67,7 @@
 
 * **Node.js + Express**
 * **Sequelize ORM**
-* **MySQL**
+* **PostgeSQL**
 
 ---
 
