@@ -170,17 +170,18 @@ export default function UserDialog({
           </div>
 
           {/* Role */}
-          <div className=' space-y-2'>
+          <div className='space-y-2'>
             <Label>Vai trò</Label>
+
             <Select
               value={form.role}
-              onValueChange={(v) =>
-                setForm((f) => ({ ...f, role: v as 'admin' | 'tenant' }))
-              }
+              disabled={form.role === 'admin'}
+              onValueChange={(v) => setForm((f) => ({ ...f, role: v as 'admin' | 'tenant' }))}
             >
               <SelectTrigger className='mt-1'>
-                <SelectValue />
+                <SelectValue placeholder='Chọn vai trò' />
               </SelectTrigger>
+
               <SelectContent>
                 <SelectItem value='admin'>Admin</SelectItem>
                 <SelectItem value='tenant'>Tenant</SelectItem>
@@ -225,6 +226,7 @@ export default function UserDialog({
           {user && onDelete && (
             <Button
               variant='destructive'
+              disabled={form.role==='admin'}
               onClick={handleDelete}
               className='mr-auto flex gap-2 bg-red-500/50 text-white'
             >
@@ -237,9 +239,7 @@ export default function UserDialog({
             <Button variant='outline' onClick={() => setOpen(false)}>
               Hủy
             </Button>
-            <Button onClick={handleSubmit}>
-              {user ? 'Lưu thay đổi' : 'Tạo user'}
-            </Button>
+            <Button onClick={handleSubmit}>{user ? 'Lưu thay đổi' : 'Tạo user'}</Button>
           </div>
         </DialogFooter>
       </DialogContent>
