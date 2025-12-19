@@ -4,7 +4,6 @@ import { useLocation, useNavigate } from 'react-router-dom'
 const pathNames = {
   '': 'Trang chủ',
   statistic: 'Thống kê',
-  revenue: 'Doanh thu',
   service: 'Dịch vụ',
   room: 'Phòng',
   invoice: 'Hóa đơn',

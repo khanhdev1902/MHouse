@@ -30,9 +30,5 @@ export const sidebarItems = [
   {
     path: 'user',
     title: 'Người dùng',
-  },
-  {
-    path: 'revenue',
-    title: 'Doanh thu',
-  },
+  }
 ]

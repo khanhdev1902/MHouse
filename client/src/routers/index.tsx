@@ -8,7 +8,6 @@ import GroupChat from "@/pages/GroupChat";
 import Contract from "@/pages/Contract";
 import User from "@/pages/User";
 import Invoice from "@/pages/Invoice";
-import Revenue from "@/pages/Revenue";
 export default function AppRouter() {
   return (
     <BrowserRouter>
@@ -16,7 +15,6 @@ export default function AppRouter() {
         <Route path="/" element={<MainLayout />}>
           <Route index element={<DashBoard />} />
           <Route path="/statistic" element={<Statistic />} />
-          <Route path="/revenue" element={<Revenue />} />
           <Route path="/service" element={<Service />} />
           <Route path="/room" element={<Room />} />
           <Route path="/invoice" element={<Invoice />} />
