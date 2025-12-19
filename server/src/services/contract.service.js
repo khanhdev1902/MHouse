@@ -11,7 +11,7 @@ class ContractService {
         {
           model: User,
           as: 'user',
-          attributes: ['userId', 'userName', 'phone'],
+          attributes: ['userId', 'cccd', 'phone', 'fullName', 'email'],
         },
         {
           model: Room,

@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button'
 import type { InvoiceFilter } from '@/hooks/useInvoice'
+import { useRoom } from '@/hooks/useRoom'
 import { Search } from 'lucide-react'
 
 const STATUS_INVOICES = [
@@ -15,6 +16,7 @@ type Props = {
 }
 
 export default function InvoiceFilterBar({ filter, updateFilter }: Props) {
+  const {rooms} =useRoom()
   return (
     <div className='flex flex-col gap-8 pt-10'>
       {/* ===== TOP BAR ===== */}
@@ -83,11 +85,10 @@ export default function InvoiceFilterBar({ filter, updateFilter }: Props) {
               className='rounded-lg border px-2 py-1 text-sm outline-none'
             >
               <option value='all'>Tất cả</option>
-              <option value='A101'>A101</option>
-              <option value='A102'>A102</option>
-              <option value='A103'>A103</option>
-              <option value='A104'>A104</option>
-              <option value='A105'>A105</option>
+              {rooms?.map((room)=>(
+                <option value={room.roomCode}>{room.roomCode}</option>
+
+              ))}
             </select>
           </div>
 

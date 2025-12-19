@@ -1,10 +1,11 @@
 // import type { Service } from "./Service"
 
-// type Tenant = {
-//   name: string
-//   checkIn: string
-//   checkOut: string
-// }
+type Tenant = {
+  userId?: number
+  fullName?: string
+  phone?: string
+  email?: string
+}
 // export type Room = {
 //   id: number
 //   roomNumb: string
@@ -35,14 +36,15 @@ export interface Amenity {
 export interface Room {
   roomId: number
   roomCode: string
-  size: number            // m²
+  size: number // m²
   floor: number
   price: number
-  status: "available" | "occupied" | "maintenance"
+  status: 'available' | 'occupied' | 'maintenance'
   category: string
   note?: string
   createdAt: string
   updatedAt: string
   services: Service[]
   amenities: Amenity[]
+  tenant?: Tenant
 }

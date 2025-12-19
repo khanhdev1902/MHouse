@@ -13,11 +13,11 @@ const Chat = require('./Chat')(sequelize, DataTypes)
 /* ===== ASSOCIATIONS ===== */
 
 // User – Contract
-User.hasMany(Contract, { foreignKey: 'userId', as: 'contracts' })
+User.hasMany(Contract, { foreignKey: 'userId', as: 'contract' })
 Contract.belongsTo(User, { foreignKey: 'userId', as: 'user' })
 
 // Room – Contract
-Room.hasMany(Contract, { foreignKey: 'roomId', as: 'contracts' })
+Room.hasMany(Contract, { foreignKey: 'roomId', as: 'contract' })
 Contract.belongsTo(Room, { foreignKey: 'roomId', as: 'room' })
 
 // Room – Invoice (hoá đơn theo phòng)

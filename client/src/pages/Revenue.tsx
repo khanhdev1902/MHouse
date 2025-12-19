@@ -1,13 +1,16 @@
 import RevenueAreaChart from "@/components/AreaChart";
 import { Chart } from "@/components/Chart";
 import Container from "@/components/Container";
-import RevenueDoughnutChart from "@/components/Table/RevenueDoughnutChart";
-import RevenueMultiLineChart from "@/components/Table/RevenueMultiLineChart";
-import RevenueProfitComboChart from "@/components/Table/RevenueProfitComboChart";
+// import RevenueDoughnutChart from "@/components/Table/RevenueDoughnutChart";
+// import RevenueMultiLineChart from "@/components/Table/RevenueMultiLineChart";
+// import RevenueProfitComboChart from "@/components/Table/RevenueProfitComboChart";
 import Sparkline from "@/components/Chart/Sparkline";
-import StackedBarChart from "@/components/Chart/StackedBarChart";
-import { piechartData, stackedbarchartData } from "@/constants/chart";
+// import StackedBarChart from "@/pages/Statistic/components/StackedBarChart";
+import { piechartData } from "@/constants/chart";
 import DoughnutChart from "@/components/Chart/DoughnutChart";
+import RevenueMultiLineChart from "@/components/AreaChart";
+import RevenueProfitComboChart from "@/components/Table/RevenueProfitComboChart";
+import RevenueDoughnutChart from "@/components/Table/RevenueDoughnutChart";
 
 export default function Revenue() {
   const revenueData = [
@@ -55,13 +58,7 @@ export default function Revenue() {
           <Sparkline dataValues={revenueData} className="h-14 max-w-80" />
         </div>
       </div>
-      <StackedBarChart
-        labels={stackedbarchartData.labels}
-        electricity={stackedbarchartData.electricity}
-        water={stackedbarchartData.water}
-        internet={stackedbarchartData.internet}
-        className="min-h-96 shadow-xs p-2 rounded-2xl"
-      />
+      
       <DoughnutChart
         dataValues={piechartData.dataValues}
         labels={piechartData.labels}
