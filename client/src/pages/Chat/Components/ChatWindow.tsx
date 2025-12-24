@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { MoreVertical, Phone, Send, Paperclip, Smile, User2 } from 'lucide-react'
 import MessageItem from './MesageItem'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function ChatWindow({ groupId }: any) {
+  console.log('Active group ID in ChatWindow:', groupId)
   const MOCK_MESSAGES = [
     {
       id: 1,
