@@ -4,7 +4,7 @@ import DashBoard from "@/pages/DashBoard";
 import Statistic from "@/pages/Statistic";
 import Service from "@/pages/Service";
 import Room from "@/pages/Room";
-import GroupChat from "@/pages/Chat/GroupChat";
+import GroupChat from "@/pages/Chat/Chat";
 import Contract from "@/pages/Contract";
 import User from "@/pages/User";
 import Invoice from "@/pages/Invoice";
