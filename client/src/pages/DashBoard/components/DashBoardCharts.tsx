@@ -1,4 +1,5 @@
-import { useRoom } from '@/hooks/useRoom'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useMemo, useState } from 'react'
 import {
   AreaChart,
   Area,
@@ -13,6 +14,15 @@ import {
   Legend,
 } from 'recharts'
 
+interface DashboardChartsProps {
+  availableRooms?: number
+  occupiedRooms?: number
+  maintenanceRooms?: number
+}
+
+/* ================= MÀU SẮC MỚI (MODERN PALETTE) ================= */
+const COLORS = ['#10b981', '#3b82f6', '#f59e0b'] // Green, Blue, Amber
+
 const revenueData = [
   { date: '01/12', revenue: 1200000 },
   { date: '02/12', revenue: 1500000 },
@@ -21,80 +31,153 @@ const revenueData = [
   { date: '05/12', revenue: 1800000 },
 ]
 
-const COLORS = ['#00b09b', '#193cb8', '#fc4a1a'] // xanh, xanh dương, đỏ
-
-// --- Component ---
-export default function DashboardCharts() {
-  const { rooms, loading } = useRoom()
-  const roomTable = {
-    available: rooms.filter((r) => r.status === 'available').length,
-    occupied: rooms.filter((r) => r.status === 'occupied').length,
-    maintenance: rooms.filter((r) => r.status === 'maintenance').length,
+/* ================= CUSTOM TOOLTIP (AREA) ================= */
+const CustomAreaTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white/90 backdrop-blur-md border border-gray-100 p-3 rounded-xl shadow-xl transition-all duration-300">
+        <p className="text-[10px] uppercase tracking-wider text-gray-400 font-bold mb-1">{label}</p>
+        <p className="text-sm font-bold text-blue-600">
+          {new Intl.NumberFormat('vi-VN').format(payload[0].value)} ₫
+        </p>
+      </div>
+    )
   }
-  const roomData = [
-    { name: 'Trống', value: roomTable.available },
-    { name: 'Đã thuê', value: roomTable.occupied },
-    { name: 'Bảo trì', value: roomTable.maintenance },
-  ]
-  if(loading) return <div>Loading...</div>
+  return null
+}
+
+/* ================= CUSTOM TOOLTIP (PIE) ================= */
+const PieTooltip = ({ active, payload }: any) => {
+  if (active && payload && payload.length) {
+    const { name, value, percent, fill } = payload[0]
+    return (
+      <div className="bg-white/90 backdrop-blur-md border border-gray-100 p-3 rounded-xl shadow-xl">
+        <div className="flex items-center gap-2 mb-1">
+          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: fill }} />
+          <p className="text-xs font-bold text-gray-700">{name}</p>
+        </div>
+        <p className="text-xs text-gray-500">
+          <span className="font-semibold text-gray-800">{value}</span> phòng ({(percent * 100).toFixed(2)}%)
+        </p>
+      </div>
+    )
+  }
+  return null
+}
+
+export default function DashboardCharts({
+  availableRooms = 10,
+  occupiedRooms = 5,
+  maintenanceRooms = 3,
+}: DashboardChartsProps) {
+  const roomData = useMemo(
+    () => [
+      { name: 'Phòng trống', value: availableRooms },
+      { name: 'Đang ở', value: occupiedRooms },
+      { name: 'Sửa chữa', value: maintenanceRooms },
+    ],
+    [availableRooms, occupiedRooms, maintenanceRooms]
+  )
+
+  const [animatedRoomData, setAnimatedRoomData] = useState(roomData.map(d => ({ ...d, value: 0 })))
+  const [activeIndex, setActiveIndex] = useState<number | null>(null)
+
+  useEffect(() => {
+    const timer = setTimeout(() => setAnimatedRoomData(roomData), 1500)
+    return () => clearTimeout(timer)
+  }, [roomData])
+
   return (
-    <div className='w-full flex flex-col lg:flex-row gap-5 mt-5'>
-      {/* AreaChart */}
-      <div className='flex-2 bg-white shadow-lg rounded-lg p-5 transition hover:shadow-2xl hover:-translate-y-1 duration-300'>
-        <h3 className='text-lg font-bold mb-4 text-gray-700'>Doanh thu theo ngày</h3>
-        <ResponsiveContainer width='100%' height={200}>
-          <AreaChart data={revenueData}>
-            <CartesianGrid strokeDasharray='3 3' stroke='#e0e0e0' />
-            <XAxis dataKey='date' tick={{ fill: '#4b5563', fontSize: 12 }} />
-            <YAxis tick={{ fill: '#4b5563', fontSize: 12 }} />
-            <Tooltip
-              formatter={(value) => new Intl.NumberFormat('vi-VN').format(Number(value)) + '₫'}
-              contentStyle={{
-                borderRadius: '10px',
-                border: 'none',
-                boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-              }}
+    <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6 antialiased">
+      
+      {/* ================= AREA CHART (REVENUE) ================= */}
+      <div className="lg:col-span-2 bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h3 className="text-lg font-bold text-gray-800">Doanh thu</h3>
+            <p className="text-xs text-gray-400">Thống kê 5 ngày gần nhất</p>
+          </div>
+          <div className="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-medium rounded-full">
+            +12.5% so với tuần trước
+          </div>
+        </div>
+
+        <ResponsiveContainer width="100%" height={280}>
+          <AreaChart data={revenueData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+            <defs>
+              <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.2} />
+                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+            <XAxis 
+              dataKey="date" 
+              axisLine={false} 
+              tickLine={false} 
+              tick={{ fill: '#9ca3af', fontSize: 11 }} 
+              dy={10}
             />
+            <YAxis 
+              axisLine={false} 
+              tickLine={false} 
+              tick={{ fill: '#9ca3af', fontSize: 11 }} 
+            />
+            <Tooltip content={<CustomAreaTooltip />} cursor={{ stroke: '#3b82f6', strokeWidth: 1 }} />
             <Area
-              type='monotone'
-              dataKey='revenue'
-              stroke='#2563EB'
-              fill='#2563EB'
-              fillOpacity={0.2}
+              // type="smooth" /* Tạo đường cong mượt mà */
+              dataKey="revenue"
+              stroke="#3b82f6"
               strokeWidth={3}
+              fillOpacity={1}
+              fill="url(#colorRev)"
+              animationDuration={1500}
             />
           </AreaChart>
         </ResponsiveContainer>
       </div>
 
-      {/* PieChart */}
-      <div className='flex-1 bg-white shadow-lg rounded-2xl p-5 transition hover:shadow-2xl hover:-translate-y-1 duration-300'>
-        <h3 className='text-lg font-bold mb-4 text-gray-700'>Tỷ lệ phòng</h3>
-        <ResponsiveContainer width='100%' height={200}>
+      {/* ================= PIE CHART (ROOM STATUS) ================= */}
+      <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
+        <h3 className="text-lg font-bold text-gray-800 mb-1">Tình trạng phòng</h3>
+        <p className="text-xs text-gray-400 mb-6">Tổng số: {availableRooms + occupiedRooms + maintenanceRooms} phòng</p>
+
+        <ResponsiveContainer width="100%" height={280}>
           <PieChart>
             <Pie
-              data={roomData}
-              dataKey='value'
-              nameKey='name'
-              cx='50%'
-              cy='50%'
-              innerRadius={50}
-              outerRadius={80}
-              paddingAngle={5}
-              label={{
-                fill: '#374151',
-                fontSize: 12,
-                fontWeight: 600,
-              }}
+              data={animatedRoomData}
+              cx="50%"
+              cy="45%"
+              innerRadius={70}
+              outerRadius={90}
+              paddingAngle={8}
+              dataKey="value"
+              onMouseEnter={(_, index) => setActiveIndex(index)}
+              onMouseLeave={() => setActiveIndex(null)}
+              stroke="none"
             >
-              {roomData.map((_, index) => (
-                <Cell key={index} fill={COLORS[index % COLORS.length]} />
+              {animatedRoomData.map((_, index) => (
+                <Cell 
+                  key={`cell-${index}`} 
+                  fill={COLORS[index % COLORS.length]} 
+                  style={{
+                    filter: activeIndex === index ? `drop-shadow(0px 0px 8px ${COLORS[index]})` : 'none',
+                    transition: 'all 0.3s ease'
+                  }}
+                />
               ))}
             </Pie>
-            <Legend verticalAlign='bottom' height={30} wrapperStyle={{ fontSize: 12 }} />
+            <Tooltip content={<PieTooltip />} />
+            <Legend 
+              verticalAlign="bottom" 
+              iconType="circle"
+              iconSize={8}
+              wrapperStyle={{ paddingTop: '20px', fontSize: '12px', fontWeight: 500 }}
+            />
           </PieChart>
         </ResponsiveContainer>
       </div>
+
     </div>
   )
 }

@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       address: DataTypes.STRING,
       description: DataTypes.TEXT,
+      ownId: DataTypes.INTEGER,
     },
     { tableName: 'contract', timestamps: true }
   )

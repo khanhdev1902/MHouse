@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import ContractAPI from '@/apis/contractAPI'
-import type { Contract } from '@/types/Contract'
+import type { Contract, ContractPayload } from '@/types/Contract'
 
 export function useContract() {
   const [contracts, setContracts] = useState<Contract[]>([])
@@ -12,7 +12,7 @@ export function useContract() {
       setLoading(true)
       const res = await ContractAPI.getContracts()
       setContracts(res.data)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -20,8 +20,9 @@ export function useContract() {
     }
   }
 
-  const createContract = async (data: Omit<Contract, 'contractId'>) => {
+  const createContract = async (data: Omit<ContractPayload, 'contractId'>) => {
     const res = await ContractAPI.createContract(data)
+    console.log(res.data)
     setContracts((prev) => [...prev, res.data])
   }
 

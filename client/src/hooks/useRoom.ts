@@ -58,7 +58,7 @@ export function useRoom() {
     })
 
     if (res) {
-      setRooms((prev) => prev.map((r) => (r.roomId === roomId ? res.data: r)))
+      setRooms((prev) => prev.map((r) => (r.roomId === roomId ? res.data : r)))
       return res.data
     }
     return null

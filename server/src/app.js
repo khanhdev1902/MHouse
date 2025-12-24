@@ -10,6 +10,7 @@ const paymentRoute = require('./routes/payment.route')
 const chatRoute = require('./routes/chat.route')
 const contractRoute = require('./routes/contract.route')
 const invoiceDetailRoute = require('./routes/invoiceDetail.route')
+const dashboardRoute = require('./routes/dashboard.route')
 
 const app = express()
 app.use(express.json())
@@ -24,6 +25,7 @@ app.use('/api/payments', paymentRoute)
 app.use('/api/chats', chatRoute)
 app.use('/api/contracts', contractRoute)
 app.use('/api/invoice-details', invoiceDetailRoute)
+app.use('/api/dashboard', dashboardRoute)
 
 app.get('/', (req, res) => {
   res.send('MHouse API running')

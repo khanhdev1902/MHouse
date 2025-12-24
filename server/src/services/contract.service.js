@@ -1,50 +1,98 @@
 const { Contract, User, Room } = require('../models')
 
+/* ===== HELPERS ===== */
+const getOwner = async () => {
+  return await User.findOne({
+    where: { role: 'admin' },
+    attributes: ['userId', 'fullName', 'phone', 'email'],
+  })
+}
+
+const formatContract = (contract, owner) => {
+  if (!contract) return null
+  const c = contract.toJSON()
+
+  return {
+    contractId: c.contractId,
+    startDate: c.startDate,
+    endDate: c.endDate,
+    deposit: c.deposit,
+    rentPrice: c.rentPrice,
+    status: c.status,
+    note: c.note,
+
+    room: c.room ?? null,
+    tenant: c.user ?? null,
+    owner,
+  }
+}
+
+/* ===== SERVICE ===== */
 class ContractService {
   static async create(data) {
-    return await Contract.create(data)
+    const contract = await Contract.create(data)
+
+    const fullContract = await Contract.findByPk(contract.contractId, {
+      include: [
+        { model: User, as: 'user', attributes: ['userId', 'fullName', 'phone', 'email'] },
+        { model: Room, as: 'room' },
+      ],
+    })
+
+    const owner = await getOwner()
+    return formatContract(fullContract, owner)
   }
 
   static async getAll() {
-    return await Contract.findAll({
+    const owner = await getOwner()
+
+    const contracts = await Contract.findAll({
       include: [
         {
           model: User,
           as: 'user',
-          attributes: ['userId', 'cccd', 'phone', 'fullName', 'email'],
+          attributes: ['userId', 'cccd', 'phone', 'fullName', 'email', 'address'],
         },
-        {
-          model: Room,
-          as: 'room',
-          attributes: ['roomId', 'roomCode'],
-        },
+        { model: Room, as: 'room' },
       ],
       order: [['createdAt', 'DESC']],
     })
+
+    return contracts.map((c) => formatContract(c, owner))
   }
 
   static async getById(id) {
-    return await Contract.findByPk(id, {
+    const contract = await Contract.findByPk(id, {
       include: [
         {
           model: User,
           as: 'user',
-          attributes: ['userId', 'name', 'phone'],
+          attributes: ['userId', 'cccd', 'phone', 'fullName', 'email', 'address'],
         },
-        {
-          model: Room,
-          as: 'room',
-          attributes: ['roomId', 'roomName'],
-        },
+        { model: Room, as: 'room' },
       ],
     })
+
+    const owner = await getOwner()
+    return formatContract(contract, owner)
   }
 
   static async update(id, data) {
     const contract = await Contract.findByPk(id)
     if (!contract) return null
 
-    return await contract.update(data)
+    await contract.update(data)
+
+    return await this.getById(id)
+  }
+
+  static async updateStatus(id, status) {
+    const contract = await Contract.findByPk(id)
+    if (!contract) return null
+
+    await contract.update({ status })
+
+    return await this.getById(id)
   }
 
   static async delete(id) {
@@ -53,13 +101,6 @@ class ContractService {
 
     await contract.destroy()
     return true
-  }
-
-  static async updateStatus(id, status) {
-    const contract = await Contract.findByPk(id)
-    if (!contract) return null
-
-    return await contract.update({ status })
   }
 }
 

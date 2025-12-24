@@ -9,4 +9,5 @@ export interface User {
   role: 'admin' | 'tenant'
   status: 'active' | 'inactive' | 'blocked'
   createdAt:string
+  address:string
 }

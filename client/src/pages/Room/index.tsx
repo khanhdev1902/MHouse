@@ -6,6 +6,7 @@ import { type Room } from '@/types/Room'
 import clsx from 'clsx'
 import { useEffect, useState } from 'react'
 import RoomFormDialog from './components/RoomDialog'
+import Loading from '@/components/Loading'
 
 const statusList = [
   { key: '', label: 'Tất cả' },
@@ -30,8 +31,7 @@ export default function Room() {
     setLstRoom(lst)
   }, [status, search, rooms])
 
-  if (loading)
-    return <div className='flex justify-center py-20 text-muted-foreground'>Loading...</div>
+  if (loading) return <Loading />
 
   if (error) return <div className='text-red-500 text-center py-10'>{error}</div>
 
@@ -39,12 +39,7 @@ export default function Room() {
     <Container className='space-y-6'>
       {/* ===== Header ===== */}
       <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
-
-        <SearchInput
-          placeholder='Tìm theo số phòng...'
-          search={search}
-          setSearch={setSearch}
-        />
+        <SearchInput placeholder='Tìm theo số phòng...' search={search} setSearch={setSearch} />
 
         <RoomFormDialog mode='create' onCreate={createRoom} />
       </div>
@@ -65,9 +60,7 @@ export default function Room() {
               onClick={() => setStatus(item.key)}
               className={clsx(
                 'px-4 py-2 text-sm font-medium rounded-full transition-all',
-                active
-                  ? 'bg-primary text-white shadow'
-                  : 'text-muted-foreground hover:bg-muted'
+                active ? 'bg-primary text-white shadow' : 'text-muted-foreground hover:bg-muted'
               )}
             >
               {item.label}
@@ -87,15 +80,13 @@ export default function Room() {
         '
       >
         {lstRoom.map((item) => (
-          <RoomCard key={item.roomId} room={item} onUpdate={updateRoom} onDelete={deleteRoom}/>
+          <RoomCard key={item.roomId} room={item} onUpdate={updateRoom} onDelete={deleteRoom} />
         ))}
       </div>
 
       {/* ===== Empty ===== */}
       {lstRoom.length === 0 && (
-        <div className='text-center py-10 text-muted-foreground'>
-          Không tìm thấy phòng phù hợp
-        </div>
+        <div className='text-center py-10 text-muted-foreground'>Không tìm thấy phòng phù hợp</div>
       )}
     </Container>
   )
