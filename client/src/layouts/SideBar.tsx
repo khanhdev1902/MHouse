@@ -28,6 +28,10 @@ export default function SideBar() {
   const navigate = useNavigate()
   const location = useLocation()
   const currentPath = location.pathname.split('/')[1] || ''
+  const handleLogout = () => {
+    localStorage.removeItem('user')
+    window.location.href = '/login'
+  }
 
   return (
     <nav className='flex h-screen w-64 flex-col border-r border-slate-100 bg-white p-4 transition-all duration-300'>
@@ -77,9 +81,7 @@ export default function SideBar() {
                   size={20}
                   className={cn(
                     'transition-all duration-300',
-                    isActive
-                      ? 'text-main scale-110'
-                      : 'text-slate-400 group-hover:text-slate-900'
+                    isActive ? 'text-main scale-110' : 'text-slate-400 group-hover:text-slate-900'
                   )}
                 />
                 <span
@@ -93,10 +95,7 @@ export default function SideBar() {
               </div>
 
               {isActive && (
-                <ChevronRight
-                  size={14}
-                  className='text-main animate-in slide-in-from-left-2'
-                />
+                <ChevronRight size={14} className='text-main animate-in slide-in-from-left-2' />
               )}
             </div>
           )
@@ -113,7 +112,8 @@ export default function SideBar() {
           </div>
         </div>
 
-        <button className='flex w-full items-center gap-3 px-4 py-3.5 rounded-2xl text-slate-400 font-bold text-sm hover:bg-rose-50 hover:text-rose-500 transition-all duration-300 group'>
+        <button onClick={handleLogout} 
+        className='flex w-full items-center gap-3 px-4 py-3.5 rounded-2xl text-slate-400 font-bold text-sm hover:bg-rose-50 hover:text-rose-500 transition-all duration-300 group'>
           <LogOut size={18} className='transition-transform group-hover:-translate-x-1' />
           <span>Đăng xuất hệ thống</span>
         </button>

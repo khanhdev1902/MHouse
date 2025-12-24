@@ -1,54 +1,99 @@
-import type { Invoice, InvoiceStatus } from '@/types/Invoice'
-import { useMemo, useState } from 'react'
-export interface InvoiceFilter {
-  search: string
-  status: InvoiceStatus | 'all'
-  room: string | 'all'
-  month: string | 'all'
-  year: string | 'all'
-}
-export const useInvoiceFilter = (data: Invoice[]) => {
-  const [filter, setFilter] = useState<InvoiceFilter>({
-    search: '',
-    status: 'all',
-    room: 'all',
-    month: 'all',
-    year: 'all',
-  })
-  const filtered = useMemo(() => {
-    return data.filter((item) => {
-      const s = filter.search.toLowerCase()
-      if (
-        s &&
-        !(
-          item.id.toLowerCase().includes(s) ||
-          item.tenant.toLowerCase().includes(s) ||
-          item.room.toLowerCase().includes(s)
-        )
-      )
-        return false
+import { useEffect, useState } from 'react'
+import type { Invoice } from '@/types/Invoice'
+import { toast } from 'sonner'
+import InvoiceAPI from '@/apis/invoiceAPI'
 
-      // Status
-      if (filter.status !== 'all' && item.status !== filter.status) return false
+export function useInvoice() {
+  const [invoices, setInvoices] = useState<Invoice[]>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-      // Room
-      if (filter.room !== 'all' && item.room !== filter.room) return false
+  /* ================= GET ALL ================= */
+  const fetchInvoices = async () => {
+    try {
+      setLoading(true)
+      setError(null)
 
-      // Month
-      if (filter.month !== 'all' && !item.month.startsWith(filter.month)) return false
-
-      // Year
-      if (filter.year !== 'all' && !item.month.endsWith(filter.year)) return false
-
-      return true
-    })
-  }, [data, filter])
-
-  const updateFilter = (key: keyof InvoiceFilter, value: string | number) => {
-    setFilter((prev) => ({
-      ...prev,
-      [key]: value,
-    }))
+      const res = await InvoiceAPI.getInvoices()
+      setInvoices(res.data)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      console.error(err)
+      setError('Không thể tải danh sách hóa đơn')
+      toast.error('Lỗi tải danh sách hóa đơn')
+    } finally {
+      setLoading(false)
+    }
   }
-  return { filter, updateFilter, filtered }
+
+  /* ================= GET BY ID ================= */
+  const getInvoiceById = async (id: number) => {
+    try {
+      const res = await InvoiceAPI.getInvoiceById(id)
+      return res.data as Invoice
+    } catch (err) {
+      console.error(err)
+      toast.error('Không tìm thấy hóa đơn')
+      return null
+    }
+  }
+
+  /* ================= CREATE ================= */
+  const createInvoice = async (payload: Partial<Invoice>) => {
+    try {
+      const res = await InvoiceAPI.createInvoice(payload)
+      setInvoices((prev) => [res.data, ...prev])
+      toast.success('Tạo hóa đơn thành công')
+      return res.data as Invoice
+    } catch (err) {
+      toast.error('Tạo hóa đơn thất bại')
+      throw err
+    }
+  }
+
+  /* ================= UPDATE ================= */
+  const updateInvoice = async (id: number, payload: Partial<Invoice>) => {
+    try {
+      const res = await InvoiceAPI.updateInvoice(id, payload)
+
+      setInvoices((prev) => prev.map((item) => (item.id === id ? res.data : item)))
+
+      toast.success('Cập nhật hóa đơn thành công')
+      return res.data as Invoice
+    } catch (err) {
+      toast.error('Cập nhật hóa đơn thất bại')
+      throw err
+    }
+  }
+
+  /* ================= DELETE ================= */
+  const deleteInvoice = async (id: number) => {
+    try {
+      await InvoiceAPI.deleteInvoice(id)
+
+      setInvoices((prev) => prev.filter((item) => item.id !== id))
+
+      toast.success('Xóa hóa đơn thành công')
+    } catch (err) {
+      toast.error('Xóa hóa đơn thất bại')
+      throw err
+    }
+  }
+
+  /* ================= AUTO LOAD ================= */
+  useEffect(() => {
+    fetchInvoices()
+  }, [])
+
+  return {
+    invoices,
+    loading,
+    error,
+
+    fetchInvoices,
+    getInvoiceById,
+    createInvoice,
+    updateInvoice,
+    deleteInvoice,
+  }
 }
