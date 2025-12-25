@@ -10,6 +10,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.ENUM('unpaid', 'paid', 'overdue'),
         defaultValue: 'unpaid',
       },
+      paymentMethod: DataTypes.STRING,
+      transId: DataTypes.STRING,
     },
     { tableName: 'invoice', timestamps: true }
   )

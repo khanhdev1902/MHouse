@@ -23,7 +23,7 @@ export function useServices() {
   }
 
   /* ===== CREATE ===== */
-  const createService = async (data: Omit<Service, 'id'>) => {
+  const createService = async (data: Omit<Service, 'serviceId'>) => {
     try {
       setLoading(true)
       await ServiceAPI.createService(data)

@@ -7,11 +7,12 @@ import InvoiceFilterBar from './components/InvoiceFilterBar'
 import Container from '@/components/Container'
 import { CheckCircle, Clock, DollarSign, FileText } from 'lucide-react'
 import { useInvoice } from '@/hooks/useInvoice'
+import Loading from '@/components/Loading'
 
 export default function Invoice() {
   const { invoices, loading } = useInvoice()
   const { filter, updateFilter, filtered } = useInvoiceFilter(invoices)
-  if (loading) return <div>Loading...</div>
+  if (loading) return <Loading />
   return (
     <Container className='flex flex-col gap-5'>
       <div className='grid grid-cols-4 gap-6'>

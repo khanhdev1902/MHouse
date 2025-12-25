@@ -11,11 +11,12 @@ import {
   SelectItem,
 } from '@/components/ui/select'
 
-import { Loader2, Users, Search, FilterX, UserPlus, RefreshCcw } from 'lucide-react'
+import { Users, Search, FilterX, UserPlus, RefreshCcw } from 'lucide-react'
 
 import UserDialog from './components/UserDialog'
 import UserTable from './components/UserTable'
 import Container from '@/components/Container'
+import Loading from '@/components/Loading'
 
 export type UserFilterState = {
   keyword: string
@@ -31,13 +32,7 @@ export default function UserPage() {
     setFilter({ keyword: '', status: 'all', role: 'all' })
   }
 
-  if (loading)
-    return (
-      <Container className='flex flex-col justify-center items-center h-[60vh] gap-4'>
-        <Loader2 className='animate-spin text-blue-600 w-10 h-10' />
-        <p className='text-slate-500 font-medium animate-pulse'>Đang tải dữ liệu người dùng...</p>
-      </Container>
-    )
+  if (loading) return <Loading />
 
   if (error)
     return (

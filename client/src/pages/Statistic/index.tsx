@@ -1,114 +1,155 @@
 import Container from '@/components/Container'
 import StackedBarChart from './components/StackedBarChart'
-import { stackedbarchartData } from '@/constants/chart'
 import StatisticCard from './components/StatisticCard'
-import { FileText, Home, TrendingUp, PieChart as PieIcon } from 'lucide-react'
+import StatisticCharts from './components/Chart'
+import {
+  Banknote,
+  CalendarCheck,
+  CreditCard,
+  DoorOpen,
+  ArrowUpRight,
+  CheckCircle2,
+  AlertCircle,
+} from 'lucide-react'
+import { useRoom } from '@/hooks/useRoom'
+import { useInvoice } from '@/hooks/useInvoice'
+import { stackedbarchartData } from '@/constants/chart'
+import { cn } from '@/lib/utils'
+import Loading from '@/components/Loading'
 
 export default function Statistic() {
-  return (
-    <Container className='flex flex-col gap-8 py-8 animate-in fade-in duration-700'>
-      {/* ===== HEADER SECTION ===== */}
-      {/* <div className='flex flex-col gap-2'>
-        <div className='flex items-center gap-2 text-main'>
-          <BarChart3 size={20} />
-          <span className='text-[10px] font-black uppercase tracking-[0.2em]'>
-            Báo cáo chi tiết
-          </span>
-        </div>
-        <h1 className='text-3xl font-black tracking-tight text-slate-900 md:text-4xl'>
-          Phân tích thống kê
-        </h1>
-        <p className='text-sm font-medium text-slate-500'>
-          Dữ liệu được cập nhật mới nhất tính đến hôm nay.
-        </p>
-      </div> */}
+  const { rooms = [] } = useRoom()
+  const { invoices = [], loading } = useInvoice()
 
-      {/* ===== KPI CARDS GRID ===== */}
+  // Logic tính toán giữ nguyên
+  const totalPaidAmount = invoices
+    .filter((inv) => inv.status === 'paid')
+    .reduce((sum, inv) => sum + (inv.totalAmount || 0), 0)
+
+  const nowMonth = new Date().toISOString().slice(0, 7)
+  const totalPaidAmountThisMonth = invoices
+    .filter((inv) => inv.status === 'paid' && inv.month === nowMonth)
+    .reduce((sum, inv) => sum + (inv.totalAmount || 0), 0)
+
+  const totalUnPaidAmount = invoices
+    .filter((inv) => inv.status === 'unpaid')
+    .reduce((sum, inv) => sum + (inv.totalAmount || 0), 0)
+
+  const roomStatusCount = {
+    available: rooms.filter((r) => r.status === 'available').length,
+    occupied: rooms.filter((r) => r.status === 'occupied').length,
+    maintenance: rooms.filter((r) => r.status === 'maintenance').length,
+  }
+  if(loading) return <Loading/>
+  return (
+    <Container className='flex flex-col gap-10 py-6 animate-in fade-in slide-in-from-bottom-4 duration-1000'>
+      {/* ===== KPI CARDS ===== */}
       <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'>
         <StatisticCard
           title='Tổng doanh thu'
-          value={34700000}
-          icon={<TrendingUp />}
-          // variant='gradient'
+          value={totalPaidAmount}
+          icon={<Banknote />}
+          className='border-b-4 border-b-emerald-500'
         />
-
         <StatisticCard
           title='Doanh thu tháng này'
-          value={18000000}
-          icon={<PieIcon />}
-          // variant='blue'
+          value={totalPaidAmountThisMonth}
+          icon={<CalendarCheck/>}
+          className='border-b-4 border-b-blue-500'
         />
-
         <StatisticCard
           title='Hóa đơn chưa thu'
-          value={6}
-          icon={<FileText />}
-          // variant='teal'
-          // className='bg-gradient-to-br from-[#f43f5e] to-[#9f1239] shadow-rose-200' // Custom cho hóa đơn chưa trả
+          value={totalUnPaidAmount}
+          icon={<CreditCard/>}
+          className='border-b-4 border-b-rose-500'
         />
-
-        <StatisticCard title='Phòng trống' value={6} icon={<Home />} />
+        <StatisticCard
+          title='Phòng trống hiện có'
+          value={roomStatusCount.available}
+          icon={<DoorOpen />}
+          className='border-b-4 border-b-indigo-500'
+        />
       </div>
 
-      {/* ===== CHARTS SECTION ===== */}
-      <div className='grid grid-cols-1 xl:grid-cols-3 gap-8'>
-        {/* Biểu đồ chính - Chiếm 2/3 không gian */}
-        <div className='xl:col-span-2 space-y-4'>
-          <div className='flex items-center justify-between px-2'>
-            <h3 className='text-xl font-black text-slate-800 tracking-tight'>Chi phí tiện ích</h3>
-            <div className='flex gap-2'>
-              <span className='flex items-center gap-1 text-[10px] font-bold text-slate-400'>
-                <span className='h-2 w-2 rounded-full bg-main' /> ĐIỆN
-              </span>
-              <span className='flex items-center gap-1 text-[10px] font-bold text-slate-400'>
-                <span className='h-2 w-2 rounded-full bg-[#00b09b]' /> NƯỚC
-              </span>
-            </div>
+      {/* ===== MAIN CHARTS SECTION ===== */}
+      <div className='space-y-8'>
+        <StatisticCharts
+          availableRooms={roomStatusCount.available}
+          occupiedRooms={roomStatusCount.occupied}
+          maintenanceRooms={roomStatusCount.maintenance}
+        />
+
+        <div className='flex flex-col xl:flex-row gap-8'>
+          {/* Biểu đồ cột chồng */}
+          <div className='flex-1 min-w-0'>
+            <StackedBarChart
+              labels={stackedbarchartData.labels}
+              electricity={stackedbarchartData.electricity}
+              water={stackedbarchartData.water}
+              internet={stackedbarchartData.internet}
+              className='h-full border-none shadow-[0_20px_50px_rgba(0,0,0,0.04)] bg-white rounded-3xl'
+            />
           </div>
 
-          <StackedBarChart
-            labels={stackedbarchartData.labels}
-            electricity={stackedbarchartData.electricity}
-            water={stackedbarchartData.water}
-            internet={stackedbarchartData.internet}
-            className='max-h-[450px] border-none shadow-2xl shadow-slate-200/50'
-          />
-        </div>
+          {/* Sidebar Info */}
+          <div className='xl:w-[400px] space-y-6'>
+            <div className='rounded-[2.5rem] bg-white border border-slate-100 p-8 shadow-sm space-y-8'>
+              {/* Performance Section */}
+              <div className='space-y-5'>
+                <div className='flex justify-between items-center'>
+                  <p className='text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]'>
+                    Hiệu suất tháng
+                  </p>
+                  <ArrowUpRight className='w-4 h-4 text-emerald-500' />
+                </div>
 
-        {/* Sidebar Info hoặc Small Widgets - Chiếm 1/3 không gian */}
-        <div className='space-y-6'>
-          <h3 className='text-xl font-black text-slate-800 tracking-tight px-2'>Thông tin nhanh</h3>
+                <div className='flex items-baseline gap-2'>
+                  <span className='text-5xl font-black text-slate-900 tracking-tighter'>85%</span>
+                  <span className='text-sm font-bold text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-lg'>
+                    +12%
+                  </span>
+                </div>
 
-          <div className='rounded-4xl bg-white border border-slate-100 p-6 shadow-xl shadow-slate-200/40 space-y-6'>
-            <div className='space-y-4'>
-              <p className='text-xs font-bold text-slate-400 uppercase tracking-widest'>
-                Hiệu suất tháng
-              </p>
-              <div className='flex items-end gap-2'>
-                <span className='text-4xl font-black text-main'>85%</span>
-                <span className='text-sm font-bold text-emerald-500 mb-1'>+12%</span>
+                <div className='relative h-3 w-full bg-slate-100 rounded-full overflow-hidden'>
+                  <div
+                    className='absolute top-0 left-0 h-full bg-linear-to-r from-emerald-400 to-blue-500 rounded-full'
+                    style={{ width: '85%' }}
+                  />
+                </div>
               </div>
-              <div className='h-2 w-full bg-slate-100 rounded-full overflow-hidden'>
-                <div className='h-full w-[85%] bg-linear-to-r from-[#00b09b] to-main rounded-full' />
-              </div>
-            </div>
 
-            <div className='pt-4 border-t border-dashed border-slate-100 space-y-4'>
-              <p className='text-xs font-bold text-slate-400 uppercase tracking-widest'>
-                Lưu ý trong tháng
-              </p>
-              <ul className='space-y-3'>
-                {[
-                  'Kiểm tra lại công tơ điện tầng 2',
-                  'Gửi thông báo tiền phòng sớm 2 ngày',
-                  'Bảo trì hệ thống Wifi tòa nhà',
-                ].map((text, i) => (
-                  <li key={i} className='flex items-start gap-3 text-sm font-medium text-slate-600'>
-                    <span className='mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#00b09b]' />
-                    {text}
-                  </li>
-                ))}
-              </ul>
+              {/* Action Notes Section */}
+              <div className='pt-8 border-t border-slate-100 space-y-6'>
+                <p className='text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]'>
+                  Việc cần làm ngay
+                </p>
+                <div className='grid gap-4'>
+                  {[
+                    { text: 'Kiểm tra công tơ tầng 2', priority: 'high' },
+                    { text: 'Gửi thông báo tiền phòng', priority: 'medium' },
+                    { text: 'Bảo trì hệ thống Wifi', priority: 'low' },
+                  ].map((item, i) => (
+                    <div
+                      key={i}
+                      className='group flex items-center gap-4 p-3 rounded-2xl hover:bg-slate-50 transition-colors cursor-pointer'
+                    >
+                      <div
+                        className={cn(
+                          'p-2 rounded-xl bg-white shadow-sm border border-slate-100 group-hover:scale-110 transition-transform',
+                          item.priority === 'high' ? 'text-rose-500' : 'text-emerald-500'
+                        )}
+                      >
+                        {item.priority === 'high' ? (
+                          <AlertCircle size={18} />
+                        ) : (
+                          <CheckCircle2 size={18} />
+                        )}
+                      </div>
+                      <span className='text-sm font-semibold text-slate-700'>{item.text}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>

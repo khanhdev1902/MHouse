@@ -8,12 +8,17 @@ import Service from '@/pages/Service'
 import Room from '@/pages/Room'
 import GroupChat from '@/pages/Chat/Chat'
 import Contract from '@/pages/Contract'
-import User from '@/pages/User'
+import UserPage from '@/pages/User'
 import Invoice from '@/pages/Invoice'
 import LoginPage from '@/pages/Login'
+import type { User } from '@/types/User'
+import HomePage from '@/pages/Tenant/Home/HomePage'
+import InvoicePage from '@/pages/Tenant/Invoice'
+import RoomPage from '@/pages/Tenant/Room'
+import ContractPageTenant from '@/pages/Tenant/Contract'
 
 export default function AppRouter() {
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user')
@@ -32,7 +37,21 @@ export default function AppRouter() {
       </BrowserRouter>
     )
   }
-
+  if (user && user.role !== 'admin') {
+    return (
+      <BrowserRouter>
+        <Routes>
+          <Route path='/tenant' element={<MainLayout />}>
+            <Route index element={<HomePage />} />
+            <Route path='room' element={<RoomPage />} />
+            <Route path='invoice' element={<InvoicePage />} />
+            <Route path='groupchat' element={<GroupChat />} />
+            <Route path='contract' element={<ContractPageTenant />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    )
+  }
   return (
     <BrowserRouter>
       <Routes>
@@ -44,7 +63,7 @@ export default function AppRouter() {
           <Route path='invoice' element={<Invoice />} />
           <Route path='groupchat' element={<GroupChat />} />
           <Route path='contract' element={<Contract />} />
-          <Route path='user' element={<User />} />
+          <Route path='user' element={<UserPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

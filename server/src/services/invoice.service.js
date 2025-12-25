@@ -10,7 +10,7 @@ const invoiceInclude = [
   {
     model: Contract,
     as: 'contract',
-    attributes: ['contractId'],
+    attributes: ['contractId', 'rentPrice'],
     include: [
       {
         model: User,
@@ -38,10 +38,14 @@ const formatInvoice = (invoice) => {
     room: invoice.room?.roomCode || '',
     tenant: invoice.contract?.user?.fullName || '',
     month: invoice.month,
-    total: invoice.totalAmount || 0,
+    totalAmount: invoice.totalAmount || 0,
     status: invoice.status,
-    dueDate: invoice.dueDate || '',
+    dueDate: invoice.dueDate ? invoice.dueDate.toISOString().split('T')[0] : '',
     details: invoice.details || [],
+    userId: invoice.contract?.user?.userId || null,
+    costRoom: invoice.contract?.rentPrice || 0,
+    paymentMethod: invoice.paymentMethod || '',
+    transId: invoice.transId || '',
   }
 }
 
@@ -60,8 +64,17 @@ const createInvoice = async (data) => {
     const contract = await Contract.findByPk(data.contractId)
     if (!contract) throw new Error('Contract not found')
   }
-
-  const invoice = await Invoice.create(data)
+  const moment = require('moment')
+  const transID = `${moment().format('YYMMDD')}_${Date.now().toString().slice(-6)}`
+  const invoice = await Invoice.create({ ...data, transId: transID })
+  if (data.details && data.details.length > 0) {
+    for (const detail of data.details) {
+      await InvoiceDetail.create({
+        ...detail,
+        invoiceId: invoice.invoiceId,
+      })
+    }
+  }
 
   const fullInvoice = await Invoice.findByPk(invoice.invoiceId, {
     include: invoiceInclude,
@@ -103,7 +116,7 @@ const updateInvoice = async (id, data) => {
     const contract = await Contract.findByPk(data.contractId)
     if (!contract) throw new Error('Contract not found')
   }
-
+  console.log(data)
   await invoice.update(data)
 
   const fullInvoice = await Invoice.findByPk(id, {

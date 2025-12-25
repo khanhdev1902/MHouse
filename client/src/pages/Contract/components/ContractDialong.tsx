@@ -22,6 +22,7 @@ import type { Contract, ContractPayload } from '@/types/Contract'
 import type { Room } from '@/types/Room'
 import type { User } from '@/types/User'
 import { CalendarDays, Home, Info, User as UserIcon, Wallet } from 'lucide-react'
+import { useRoom } from '@/hooks/useRoom'
 
 const EMPTY_FORM: ContractPayload = {
   roomId: 0,
@@ -59,6 +60,7 @@ export default function ContractDialog({
 }: ContractDialogProps) {
   const [open, setOpen] = useState(false)
   const [form, setForm] = useState<ContractPayload>(EMPTY_FORM)
+  const {updateRoom} = useRoom();
 
   useEffect(() => {
     if (contract && mode === 'update') {
@@ -76,6 +78,15 @@ export default function ContractDialog({
       setForm(EMPTY_FORM)
     }
   }, [contract, mode, open])
+  // Thêm effect này sau khi khai báo state form
+useEffect(() => {
+  if (form.roomId) {
+    const selectedRoom = rooms.find((r) => r.roomId === form.roomId)
+    if (selectedRoom) {
+      setForm((f) => ({ ...f, rentPrice: selectedRoom.price || 0 }))
+    }
+  }
+}, [form.roomId, rooms])
 
   const selectedTenant = useMemo(() => {
     return users.find((u) => u.userId === form.userId) ?? contract?.tenant
@@ -92,9 +103,14 @@ export default function ContractDialog({
   }
 
   const handleSubmit = (isDelete = false) => {
-    if (mode === 'create') onCreate?.(form)
+    if (mode === 'create'){
+      onCreate?.(form)
+      updateRoom(form.roomId, { status: 'occupied' });
+
+    }
     if (mode === 'update' && contract && !isDelete) onUpdate?.(contract.contractId, form)
     if (isDelete && contract) {
+      updateRoom(contract.roomId, { status: 'available' });
       onDelete?.(contract.contractId)
     }
     setOpen(false)

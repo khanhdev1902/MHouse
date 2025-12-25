@@ -1,8 +1,7 @@
 // src/apis/authAPI.ts
-import axios from 'axios'
-
+import http from './httpClient'
 const authAPI = {
-  login: (data: { username: string; password: string }) => axios.post('/api/auth/login', data),
+  login: (data: { username: string; password: string }) => http.post('/auth/login', data),
 }
 
 export default authAPI

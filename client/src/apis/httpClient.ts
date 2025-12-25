@@ -4,7 +4,7 @@ const httpClient: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api/',
   timeout: 8000,
 });
-
+console.log('HTTP Client Base URL:', httpClient.defaults.baseURL);
 // Basic error log
 httpClient.interceptors.response.use(
   (response) => response,

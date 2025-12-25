@@ -19,15 +19,17 @@ interface StackedBarProps {
   electricity?: number[]
   water?: number[]
   internet?: number[]
-  title?: string // Thêm tiêu đề cho biểu đồ
+  title?: string
 }
 
-// Hàm tạo Gradient mượt mà hơn
-const createSoftGradient = (
-  ctx: CanvasRenderingContext2D,
-  colorStart: string,
-  colorEnd: string
-) => {
+// Bảng màu hiện đại (Modern Soft Palette)
+const COLORS = {
+  electricity: { start: '#4F46E5', end: '#818CF8' }, // Indigo
+  water: { start: '#0EA5E9', end: '#7DD3FC' },      // Sky
+  internet: { start: '#F43F5E', end: '#FDA4AF' },   // Rose
+}
+
+const createSoftGradient = (ctx: CanvasRenderingContext2D, colorStart: string, colorEnd: string) => {
   const gradient = ctx.createLinearGradient(0, 0, 0, 400)
   gradient.addColorStop(0, colorStart)
   gradient.addColorStop(1, colorEnd)
@@ -48,27 +50,29 @@ export default function StackedBarChart({
       {
         label: 'Điện',
         data: electricity,
-        // Sử dụng mã màu hiện đại hơn
-        backgroundColor: (ctx) => createSoftGradient(ctx.chart.ctx, '#6366f1', '#a5b4fc'),
-        borderRadius: 6,
+        backgroundColor: (ctx) => createSoftGradient(ctx.chart.ctx, COLORS.electricity.start, COLORS.electricity.end),
+        hoverBackgroundColor: COLORS.electricity.start,
+        borderRadius: 4, // Giảm một chút để nhìn chuyên nghiệp hơn
         borderSkipped: false,
-        barThickness: 24,
+        barThickness: 20,
       },
       {
         label: 'Nước',
         data: water,
-        backgroundColor: (ctx) => createSoftGradient(ctx.chart.ctx, '#0ea5e9', '#7dd3fc'),
-        borderRadius: 6,
+        backgroundColor: (ctx) => createSoftGradient(ctx.chart.ctx, COLORS.water.start, COLORS.water.end),
+        hoverBackgroundColor: COLORS.water.start,
+        borderRadius: 4,
         borderSkipped: false,
-        barThickness: 24,
+        barThickness: 20,
       },
       {
         label: 'Internet',
         data: internet,
-        backgroundColor: (ctx) => createSoftGradient(ctx.chart.ctx, '#f43f5e', '#fda4af'),
-        borderRadius: 6,
+        backgroundColor: (ctx) => createSoftGradient(ctx.chart.ctx, COLORS.internet.start, COLORS.internet.end),
+        hoverBackgroundColor: COLORS.internet.start,
+        borderRadius: 4,
         borderSkipped: false,
-        barThickness: 24,
+        barThickness: 20,
       },
     ],
   }
@@ -76,52 +80,32 @@ export default function StackedBarChart({
   const options: ChartOptions<'bar'> = {
     responsive: true,
     maintainAspectRatio: false,
-    layout: {
-      padding: { top: 10 },
-    },
-    animation: {
-      duration: 1200,
-      easing: 'easeOutExpo',
-    },
-    interaction: {
-      mode: 'index',
-      intersect: false,
-    },
     plugins: {
       legend: {
-        position: 'bottom',
-        align: 'start', // Căn lề trái cho legend nhìn hiện đại hơn
+        position: 'top',
+        align: 'end', // Đẩy sang phải cho thoáng phần tiêu đề
         labels: {
           usePointStyle: true,
           pointStyle: 'circle',
-          boxWidth: 6,
-          padding: 25,
-          font: {
-            size: 13,
-            weight: 'bold',
-            family: "'Inter', sans-serif",
-          },
-          color: '#4b5563',
+          padding: 20,
+          font: { size: 12, weight: 'bold', family: 'Inter' },
+          color: '#64748b',
         },
       },
       tooltip: {
-        enabled: true,
-        backgroundColor: 'rgba(15, 23, 42, 0.9)', // Dark mode cho tooltip
-        // backdropBlur: 4,
+        padding: 16,
+        backgroundColor: '#1e293b',
         titleFont: { size: 14, weight: 'bold' },
         bodyFont: { size: 13 },
-        padding: 12,
-        cornerRadius: 12,
-        displayColors: true,
-        usePointStyle: true,
+        footerFont: { size: 13, weight: 'bold' },
+        footerMarginTop: 10,
+        cornerRadius: 8,
+        boxPadding: 6,
         callbacks: {
-          label: (ctx) => {
-            const value = ctx.parsed?.y ?? 0
-            return ` ${ctx.dataset.label}: ${value.toLocaleString('vi-VN')}₫`
-          },
+          label: (ctx) => ` ${ctx.dataset.label}: ${ctx.parsed.y?.toLocaleString()}₫`,
           footer: (items) => {
-            const total = items.reduce((sum, item) => sum + (item.parsed?.y ?? 0), 0)
-            return `Tổng cộng: ${total.toLocaleString('vi-VN')}₫`
+            const total = items.reduce((sum, item) => sum + (item.parsed.y ?? 0), 0)
+            return `Tổng cộng: ${total.toLocaleString()}₫`
           },
         },
       },
@@ -130,42 +114,43 @@ export default function StackedBarChart({
       x: {
         stacked: true,
         grid: { display: false },
-        border: { display: false },
-        ticks: {
-          font: { size: 12, weight: 'bold' },
-          color: '#9ca3af',
-        },
+        ticks: { font: { size: 12 }, color: '#94a3b8' },
+        border: { display: false }
       },
       y: {
         stacked: true,
-        beginAtZero: true,
-        border: { display: false },
-        grid: {
-          color: '#f3f4f6',
-        },
+        border: { dash: [4, 4], display: false }, // Đường kẻ đứt quãng nhẹ nhàng
+        grid: { color: '#f1f5f9' },
         ticks: {
-          callback: (value) => value.toLocaleString('vi-VN') + '₫',
+          callback: (val) => `${Number(val) / 1000}k`, // Rút gọn số cho gọn biểu đồ
           font: { size: 11 },
-          color: '#9ca3af',
-          padding: 10,
+          color: '#94a3b8',
+          stepSize: 100000,
         },
       },
     },
   }
 
   return (
-    <div
-      className={cn(
-        'flex flex-col h-full w-full rounded-2xl bg-white p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 transition-all hover:shadow-lg',
-        className
-      )}
-    >
-      <div className='mb-6'>
-        <h3 className='text-lg font-bold text-slate-800 tracking-tight'>{title}</h3>
-        <p className='text-sm text-slate-400 font-medium'>Chi tiết chi phí tiêu thụ theo tháng</p>
+    <div className={cn(
+      "group relative flex flex-col w-full rounded-3xl bg-white p-8",
+      "border border-slate-200/60 shadow-sm transition-all duration-300",
+      "hover:shadow-[0_20px_50px_rgba(0,0,0,0.05)] hover:-translate-y-1",
+      className
+    )}>
+      <div className="flex items-start justify-between mb-8">
+        <div>
+          <h3 className="text-xl font-semibold text-slate-900 tracking-tight">{title}</h3>
+          <p className="text-sm text-slate-bold mt-1">Phân tích chi phí vận hành hàng tháng</p>
+        </div>
+        
+        {/* Badge trang trí - Tăng độ chuyên nghiệp */}
+        <div className="px-3 py-1 bg-indigo-50 text-indigo-600 text-xs font-bold rounded-full uppercase tracking-wider">
+          Real-time
+        </div>
       </div>
 
-      <div className='flex-1 min-h-[300px]'>
+      <div className="relative h-[350px] w-full">
         <Bar data={data} options={options} />
       </div>
     </div>

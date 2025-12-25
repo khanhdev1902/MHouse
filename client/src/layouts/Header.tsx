@@ -54,7 +54,7 @@ export default function Header({ className }: { className?: string }) {
         <div className='flex items-center gap-3 pl-2 group cursor-pointer'>
           <div className='flex-col items-end hidden sm:flex'>
             <span className='text-sm font-bold text-slate-800 leading-none'>{user?.fullName}</span>
-            <span className='text-[10px] font-medium text-slate-400 mt-1'>Quản trị viên</span>
+            <span className='text-[10px] font-medium text-slate-400 mt-1'>{user?.role==='admin'?'Quản trị viên':'Khách thuê'}</span>
           </div>
           <div className='p-0.5 rounded-full border-2 border-[#00b09b]/20 group-hover:border-[#00b09b] transition-all duration-300'>
             <Avatar className='h-10 w-10 shadow-sm'>

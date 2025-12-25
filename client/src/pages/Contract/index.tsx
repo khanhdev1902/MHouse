@@ -40,7 +40,7 @@ export default function ContractPage() {
               Quản lý và theo dõi các thỏa thuận thuê phòng của bạn.
             </p>
           </div>
-          <ContractDialog mode='create' rooms={rooms} users={users} onCreate={createContract} />
+          <ContractDialog mode='create' rooms={rooms.filter(r=>r.status==='available')} users={users} onCreate={createContract} />
         </div>
 
         {/* SEARCH & FILTER BAR */}

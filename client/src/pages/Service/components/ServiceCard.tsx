@@ -17,14 +17,14 @@ export default function ServiceCard({ data, onUpdate, onDelete }: ServiceCardPro
         'group relative overflow-hidden rounded-3xl border border-slate-100 bg-white p-5',
         'transition-all duration-500 ease-out',
         'shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.1)]',
-        'hover:-translate-y-1.5'
+        'hover:-translate-y-1.5 select-none'
       )}
     >
       {/* Background Decor: Tạo một vệt màu nhẹ phía sau để làm card bớt đơn điệu */}
       <div className='absolute -right-6 -top-6 h-24 w-24 rounded-full bg-blue-50/50 transition-transform duration-700 group-hover:scale-150' />
 
       {/* Action: Edit button (Glassmorphism style) */}
-      <div className='absolute right-3 top-3 z-10 opacity-0 transition-all duration-300 group-hover:opacity-100'>
+      <div className='absolute right-3 top-3 z-10 opacity-0 transition-all duration-300 group-hover:opacity-100 hover:scale-105 active:scale-95'>
         <ServiceDialog
           mode='update'
           service={data}
@@ -34,7 +34,7 @@ export default function ServiceCard({ data, onUpdate, onDelete }: ServiceCardPro
             <Button
               size='icon'
               variant='secondary'
-              className='h-9 w-9 rounded-xl bg-white/80 shadow-sm backdrop-blur-md hover:bg-white'
+              className='h-full w-full rounded-xl bg-white/80 shadow-sm backdrop-blur-md hover:bg-white cursor-pointer'
             >
               <SquarePen className='h-4 w-4 text-blue-600' />
             </Button>

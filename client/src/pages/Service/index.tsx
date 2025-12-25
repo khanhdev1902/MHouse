@@ -4,7 +4,8 @@ import ServiceDialog from './components/ServiceDialog'
 import { useServices } from '@/hooks/useService'
 import { Input } from '@/components/ui/input'
 import { useMemo, useState } from 'react'
-import { Loader2, Search } from 'lucide-react'
+import { Search } from 'lucide-react'
+import Loading from '@/components/Loading'
 
 export default function Service() {
   const { services, loading, error, createService, updateService, deleteService } = useServices()
@@ -16,12 +17,7 @@ export default function Service() {
     return services.filter((s) => s.name?.toLowerCase().includes(search.toLowerCase().trim()))
   }, [services, search])
 
-  if (loading)
-    return (
-      <div className='flex justify-center items-center h-64'>
-        <Loader2 className='animate-spin text-red-500' />
-      </div>
-    )
+  if (loading) return <Loading />
   if (error) return <Container className='text-red-500'>{error}</Container>
 
   return (

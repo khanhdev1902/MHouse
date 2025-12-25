@@ -27,6 +27,7 @@ app.use('/api/contracts', contractRoute)
 app.use('/api/invoice-details', invoiceDetailRoute)
 app.use('/api/dashboard', dashboardRoute)
 app.use('/api/auth', require('./routes/auth.route'))
+app.use('/api/', require('./zalopay/index'))
 
 app.get('/', (req, res) => {
   res.send('MHouse API running')

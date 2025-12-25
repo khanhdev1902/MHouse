@@ -7,7 +7,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import type { Invoice } from '@/types/Invoice'
-import { Edit3, FileText, User, Home, Calendar, Clock, CreditCard } from 'lucide-react'
+import { FileText, User, Home, Calendar, Clock, CreditCard, Eye } from 'lucide-react'
 import InvoiceDialog from './InvoiceDialog'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
@@ -124,7 +124,7 @@ export default function InvoiceTable({ INVOICE_DATA = [] }: InvoiceTableProps) {
                   <TableCell className='text-right pr-10'>
                     <div className='flex flex-col items-end'>
                       <span className='text-sm font-black text-main'>
-                        {item.total.toLocaleString('vi-VN')}₫
+                        {item.totalAmount.toLocaleString('vi-VN')}₫
                       </span>
                       <div className='flex items-center gap-1 text-[10px] text-slate-400 uppercase font-bold'>
                         <CreditCard size={10} /> Chuyển khoản
@@ -167,7 +167,7 @@ export default function InvoiceTable({ INVOICE_DATA = [] }: InvoiceTableProps) {
                         setOpen(true)
                       }}
                     >
-                      <Edit3 size={18} />
+                      <Eye size={18} />
                     </Button>
                   </TableCell>
                 </TableRow>

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import { LayoutDashboard, Mail, Lock, Eye, EyeOff, ArrowRight, ShieldCheck } from 'lucide-react'
+import authAPI from '@/apis/authAPI'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function LoginPage({ setUser }: { setUser: (user: any) => void }) {
@@ -22,27 +23,22 @@ export default function LoginPage({ setUser }: { setUser: (user: any) => void })
     setIsLoading(true)
 
     try {
-      const res = await fetch('http://localhost:3000/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          username: form.username,
-          password: form.password,
-        }),
+      const res = await authAPI.login({
+        username: form.username,
+        password: form.password,
       })
 
-      const data = await res.json()
+      const data = res.data
 
-      if (!res.ok) {
-        alert(data.message)
-        return
-      }
       console.log('Login successful:', data.user)
+
       localStorage.setItem('user', JSON.stringify(data.user))
       setUser(data.user)
-      navigate('/')
-    } catch (err) {
-      alert('Không kết nối được server')
+
+      data.user.role === 'admin' ? navigate('/') : navigate('/tenant')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Không kết nối được server')
     } finally {
       setIsLoading(false)
     }
