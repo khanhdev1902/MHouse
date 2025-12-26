@@ -13,6 +13,8 @@ import { cn } from '@/lib/utils'
 export interface DashBoardData {
   totalRooms?: number
   totalUsers?: number
+  totalAmount?: number
+  totalUnpaid?: number
   availableRooms?: number
   maintenanceRooms?: number
   occupiedRooms?: number
@@ -22,6 +24,13 @@ export default function DashBoard() {
   const [dashBoardData, setDashBoardData] = useState<DashBoardData | null>(null)
   const { invoices = [] } = useInvoice()
   const [loading, setLoading] = useState(true)
+
+  const totalPaidAmount = invoices
+    .filter((inv) => inv.status === 'paid')
+    .reduce((sum, inv) => sum + (inv.totalAmount || 0), 0)
+  const totalUnPaidAmount = invoices
+    .filter((inv) => inv.status === 'unpaid')
+    .reduce((sum, inv) => sum + (inv.totalAmount || 0), 0)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -87,6 +96,8 @@ export default function DashBoard() {
         totalRooms={dashBoardData?.totalRooms ?? 0}
         totalUsers={dashBoardData?.totalUsers ?? 0}
         availableRooms={dashBoardData?.availableRooms ?? 0}
+        totalAmount={totalPaidAmount}
+        totalUnpaid={totalUnPaidAmount}
       />
 
       {/* 3. Main Content Grid */}

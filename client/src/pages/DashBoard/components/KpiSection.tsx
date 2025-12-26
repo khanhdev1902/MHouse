@@ -6,18 +6,19 @@ export default function KpiSection({
   totalRooms = 0,
   totalUsers = 0,
   availableRooms = 0,
-  // maintenanceRooms = 0,
-  // occupiedRooms = 0,
-}: DashBoardData) {
+  totalAmount = 0,
+  totalUnpaid = 0,
+}:
+DashBoardData) {
   const kpis = [
     {
-      title: 'Doanh thu tháng này',
-      value: 1_902_000_000,
+      title: 'Tổng doanh thu',
+      value: totalAmount,
       icon: TrendingUp,
     },
     {
       title: 'Hóa đơn chưa thanh toán',
-      value: 2_400_000,
+      value: totalUnpaid,
       icon: FileMinus,
     },
     {
