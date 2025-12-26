@@ -16,6 +16,7 @@ import HomePage from '@/pages/Tenant/Home/HomePage'
 import InvoicePage from '@/pages/Tenant/Invoice'
 import RoomPage from '@/pages/Tenant/Room'
 import ContractPageTenant from '@/pages/Tenant/Contract'
+import ChatPage from '@/pages/Tenant/Chat'
 
 export default function AppRouter() {
   const [user, setUser] = useState<User | null>(null)
@@ -45,7 +46,7 @@ export default function AppRouter() {
             <Route index element={<HomePage />} />
             <Route path='room' element={<RoomPage />} />
             <Route path='invoice' element={<InvoicePage />} />
-            <Route path='groupchat' element={<GroupChat />} />
+            <Route path='groupchat' element={<ChatPage />} />
             <Route path='contract' element={<ContractPageTenant />} />
           </Route>
         </Routes>

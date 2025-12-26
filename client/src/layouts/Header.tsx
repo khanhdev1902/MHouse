@@ -54,11 +54,17 @@ export default function Header({ className }: { className?: string }) {
         <div className='flex items-center gap-3 pl-2 group cursor-pointer'>
           <div className='flex-col items-end hidden sm:flex'>
             <span className='text-sm font-bold text-slate-800 leading-none'>{user?.fullName}</span>
-            <span className='text-[10px] font-medium text-slate-400 mt-1'>{user?.role==='admin'?'Quản trị viên':'Khách thuê'}</span>
+            <span className='text-[10px] font-medium text-slate-400 mt-1'>
+              {user?.role === 'admin' ? 'Quản trị viên' : 'Khách thuê'}
+            </span>
           </div>
           <div className='p-0.5 rounded-full border-2 border-[#00b09b]/20 group-hover:border-[#00b09b] transition-all duration-300'>
             <Avatar className='h-10 w-10 shadow-sm'>
-              <AvatarImage src='https://i.pinimg.com/736x/a2/7b/b4/a27bb41fd235113a0c5503123a25d227.jpg' />
+              {user?.role === 'admin' ? (
+                <AvatarImage src='https://i.pinimg.com/736x/a2/7b/b4/a27bb41fd235113a0c5503123a25d227.jpg' />
+              ) : (
+                <AvatarImage src='https://i.pinimg.com/736x/68/85/4a/68854a914801432ec3f17c38ce67f429.jpg' />
+              )}
               <AvatarFallback className='bg-slate-100 text-main font-bold'>KD</AvatarFallback>
             </Avatar>
           </div>

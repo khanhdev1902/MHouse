@@ -2,12 +2,19 @@ const { Chat, User } = require('../models')
 
 class ChatService {
   static async create(data) {
-    return await Chat.create(data)
+    const chat = await Chat.create(data)
+    return await Chat.findByPk(chat.chatId, {
+      include: [
+        { model: User, as: 'user', attributes: ['userId', 'userName', 'fullName', 'role'] },
+      ],
+    })
   }
 
   static async getAll() {
     return await Chat.findAll({
-      include: [{ model: User, attributes: ['userId', 'name'] }],
+      include: [
+        { model: User, as: 'user', attributes: ['userId', 'userName', 'fullName', 'role'] },
+      ],
       order: [['createdAt', 'ASC']],
     })
   }
